@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.Random;
 
 import com.callor.list.model.ScoreVO;
+import com.callor.list.service.ScoreServiceV1;
 
 public class ScoreEx_01 {
 	public static void main(String[] args) {
-		
+		ScoreServiceV1 sService = new ScoreServiceV1();
 		List<ScoreVO> scoreList = new ArrayList<ScoreVO>();
 		Random rnd = new Random();
 		int stdNum = 20;
