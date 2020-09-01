@@ -1,6 +1,5 @@
 package com.biz.book.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,9 +11,13 @@ public class BookServiceImplV1 implements BookService {
 	BookVO bookVO;
 	List<BookVO> bookList;
 
-	public BookServiceImplV1() {
-		scan = new Scanner(System.in);
-		bookList = new ArrayList<BookVO>();
+	private BookServiceImplV1() {
+		
+	}
+	
+	public BookServiceImplV1(Scanner scan, List<BookVO> bookList) {
+		this.scan = scan;
+		this.bookList = bookList;
 	}
 
 	@Override
