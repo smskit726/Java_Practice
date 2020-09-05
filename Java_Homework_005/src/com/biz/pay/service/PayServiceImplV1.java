@@ -5,9 +5,9 @@ import java.util.Scanner;
 
 public class PayServiceImplV1 implements PayService{
 	
-	protected int intTotal;
-	protected int[] paper;
-	protected int[] paperNum;
+	private int intTotal;
+	private int[] paper;
+	private int[] paperNum;
 	
 	public PayServiceImplV1() {
 		// 사용자가 입력한 금액

@@ -25,12 +25,22 @@ public class StudentServiceImplV1 implements StudentService {
 	private String[] item;
 	private String stNum;
 
+	// 기본 생성자
 	public StudentServiceImplV1() {
 		stdList = new ArrayList<StudentVO>();
 		scan = new Scanner(System.in);
 		fileName = "src/com/biz/student/student.txt";
-
-		item = new String[] { "학번", "이름", "학과", "학년", "번호" };
+		item = new String[] {"학번", "이름", "학과", "학년", "번호"};
+		
+		this.loadList();
+	}
+	
+	// 매개변수를 이용하는 생성자
+	public StudentServiceImplV1(Scanner scan, String fileName, String[] item) {
+		stdList = new ArrayList<StudentVO>();
+		this.scan = scan;
+		this.fileName = fileName;
+		this.item = item;
 
 		this.loadList();
 	}
@@ -42,11 +52,6 @@ public class StudentServiceImplV1 implements StudentService {
 		BufferedReader buffer = null;
 
 		try {
-
-			if (!file.exists()) {
-				file.createNewFile();
-				return;
-			}
 
 			fileReader = new FileReader(this.fileName);
 			buffer = new BufferedReader(fileReader);
@@ -72,7 +77,8 @@ public class StudentServiceImplV1 implements StudentService {
 			}
 
 		} catch (FileNotFoundException e) {
-			System.out.println("파일을 찾을 수 없습니다 :(");
+			String[] fName = fileName.split("/");
+			System.out.printf("%s 파일을 찾을 수 없습니다 :(\n", fName[(fName.length) -1]);
 		} catch (IOException e) {
 			System.out.println("파일을 읽을 수 없습니다 :(");
 		}
@@ -88,8 +94,6 @@ public class StudentServiceImplV1 implements StudentService {
 		if (temp.equals("END")) {
 			System.out.println("이용해주셔서 감사합니다 :)");
 			
-		} else if (temp.isEmpty()) {
-			temp = "Default";
 		}
 
 		temp = temp.replaceAll(" ", "");
@@ -106,8 +110,14 @@ public class StudentServiceImplV1 implements StudentService {
 			
 			if(stNum.equals("END")) {
 				return false;
+			} else if (stNum.equals("GEN")) {
+				stNum = this.stNumGen();
 			} else if (!this.certId()) {
 				System.out.println("이미 등록된 학번입니다. 다시 입력해주세요 :(");
+				System.out.println("(학번 자동 생성 : GEN)");
+				continue;
+			} else if(stNum.length() != 8) {
+				System.out.println("학번을 8자리 숫자로 입력하세요!");
 				continue;
 			}
 			
@@ -115,9 +125,11 @@ public class StudentServiceImplV1 implements StudentService {
 			
 			try {
 				intNum = Integer.valueOf(stNum);
+				
 			} catch (NumberFormatException e) {
-				System.out.println("학번은 필수 입력사항이며 숫자로만 입력 가능합니다. 학번을 자동생성합니다");
-				stNum = this.stNumGen();
+				System.out.println("학번에 문자열이 포함되어 있습니다. 다시 입력해주세요 :(");
+				System.out.println("(학번 자동 생성 : GEN)");
+				continue;
 			}
 			break;
 		}
@@ -135,7 +147,7 @@ public class StudentServiceImplV1 implements StudentService {
 
 			if(stName.equals("END")) {
 				return false;
-			} else if (stName.equals("Default")) {
+			} else if (stName.isEmpty()) {
 				System.out.println("이름은 필수 입력사항입니다. 다시 입력해주세요");
 				continue;
 			}
@@ -166,17 +178,16 @@ public class StudentServiceImplV1 implements StudentService {
 	@Override
 	public boolean gradeInput() {
 		String strGrade = "";
-		int intGrade = 0;
-		
+		int intGrade;
 		while(true) {
 			strGrade = this.inputForm(item[SplitPos.ST_GRADE]);
 			if(strGrade.equals("END")) {
 				return false;
-			} else if(strGrade.equals("Default")) {
+			} else if(strGrade.isEmpty()) {
 				System.out.println("입력된 내용이 없어 1학년으로 저장합니다.");
-				strGrade = "1";
 			}
 			
+			intGrade = 1; // 학년을 입력하지 않을 시 1학년으로 저장 
 			try {
 				intGrade = Integer.valueOf(strGrade);
 				
@@ -206,7 +217,7 @@ public class StudentServiceImplV1 implements StudentService {
 			stTel = stTel.replaceAll("-", "");
 			if(stTel.equals("END")) {
 				return false;
-			} else if(stTel.equals("Default")) {
+			} else if(stTel.isEmpty()) {
 				System.out.println("입력된 내용이 없어 0으로 저장합니다 :(");
 				stTel = "0";
 			} else if(stTel.length()>11) {
@@ -234,6 +245,10 @@ public class StudentServiceImplV1 implements StudentService {
 	public void saveList() {
 		FileWriter fileWriter = null;
 		PrintWriter pWriter = null;
+		
+		if(stdVO.getStNum() == null || stdVO.getStName() == null) {
+			return;
+		}
 		
 		try {
 			fileWriter = new FileWriter(this.fileName, true);
@@ -305,7 +320,6 @@ public class StudentServiceImplV1 implements StudentService {
 			if(i==size-1) {
 				intSeq = Integer.valueOf(seqArr[size-1])+1;
 				strSeq = String.valueOf(intSeq);
-				System.out.println(intSeq);
 			}
 			
 			intSeq = Integer.valueOf(strSeq);
