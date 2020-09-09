@@ -15,5 +15,7 @@ public class BowlingExec_01 {
 		BowlingService bService = new BowlingServiceImplV1(scan, scoreList);
 		
 		bService.scoreInput();
+		bService.calcScore();
+		bService.printScore();
 	}
 }
