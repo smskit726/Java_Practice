@@ -29,7 +29,7 @@ public class BowlingServiceImplV1 implements BowlingService {
 		for (frame = 1; frame <= 10; frame++) {
 
 			while (true) {
-				System.out.printf("%s 프레임 초구\n", frame);
+				System.out.printf("□□ %s 프레임 초구  □□\n", frame);
 				System.out.print("쓰러트린 핀의 갯수를 입력하세요 (가능 >> 0 ~ 10) : ");
 				strScore = scan.nextLine();
 
@@ -42,7 +42,7 @@ public class BowlingServiceImplV1 implements BowlingService {
 					} else if (intScore == 10) {
 						frame++;
 						scoreList.add(intScore);
-						LineService.lineGen("-", 100);
+						LineService.lineGen("-", 120);
 						continue;
 					}
 				} catch (NumberFormatException e) {
@@ -57,7 +57,7 @@ public class BowlingServiceImplV1 implements BowlingService {
 			int lmScore = 10 - intScore;
 
 			while (true) {
-				System.out.printf("%s 프레임 두번째구\n", frame);
+				System.out.printf("□□ %s 프레임 두번째구  □□\n", frame);
 				System.out.printf("쓰러트린 핀의 갯수를 입력하세요 (가능 >> 0 ~ %s) : ", lmScore);
 				strScore = scan.nextLine();
 
@@ -78,7 +78,7 @@ public class BowlingServiceImplV1 implements BowlingService {
 
 			while (true) {
 				if (frame == 10 && (lmScore - intScore) == 0) {
-					System.out.printf("%s 프레임 세번째구\n", frame);
+					System.out.printf("□□ %s 프레임 세번째구  □□\n", frame);
 					System.out.print("쓰러트린 핀의 갯수를 입력하세요 (가능 >> 0 ~ 10) : ");
 
 					strScore = scan.nextLine();
@@ -98,7 +98,7 @@ public class BowlingServiceImplV1 implements BowlingService {
 				}
 				break;
 			}
-			LineService.lineGen("-", 100);
+			LineService.lineGen("-", 120);
 		}
 	}
 
@@ -121,20 +121,40 @@ public class BowlingServiceImplV1 implements BowlingService {
 			} else {
 				totalScore += score + scoreList.get(i + 1);
 				i++;
-				System.out.printf("%d, %d\n",i,totalScore);
 			}
-
+			
 			totalArr[index] = totalScore;
 			index++;
+			
+			// 10 프레임 스트라이크 or 스페어가 아니었을 경우!
+			if(index==9 && i==size-3) {
+				i++;
+				score = scoreList.get(i);
+				totalScore += score + scoreList.get(i+1);
+				totalArr[index] = totalScore;
+			}
 		}
 	}
 
 	@Override
 	public void printScore() {
 		
-		for (int i = 0; i<totalArr.length; i++) {
-			System.out.printf("%d 프레임 : %d 점\n" , i+1, totalArr[i]);
+		LineService.lineGen("▦", 120);
+		System.out.println("Score Board");
+		LineService.lineGen("-", 120);
+		
+		int len = totalArr.length;
+		for (int i = 0; i<len; i++) {
+			System.out.printf("%2s%-2d%s%2s┃","",i+1,"Frame","");
 		}
+		System.out.println();
+		
+		for (int i=0; i<len; i++) {
+			System.out.printf("%3s%-3d점%3s┃","",totalArr[i],"");
+		}
+		System.out.println();
+		LineService.lineGen("▦", 120);
+
 	}
 
 }
